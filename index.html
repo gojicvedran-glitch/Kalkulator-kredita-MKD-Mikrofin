@@ -49,10 +49,10 @@
   }
   .prod-note { background: rgba(232, 184, 75, 0.1); border-color: var(--gold); color: var(--gold-lt); }
   
-  .iw input[type="number"], .tnaziv, .tpct-wrap input, .pf input, .pf-full input, .tval-display {
+  .iw input[type="number"], .tnaziv, .tpct-wrap input, .tval-input, .pf input, .pf-full input, .tval-display {
     background: var(--bg2); color: var(--txt);
   }
-  .iw input:focus, .tnaziv:focus, .tpct-wrap input:focus, .pf input:focus, .pf-full input:focus {
+  .iw input:focus, .tnaziv:focus, .tpct-wrap input:focus, .tval-input:focus, .pf input:focus, .pf-full input:focus {
     background: var(--bg);
   }
   
@@ -60,7 +60,7 @@
   .c-item { background: var(--bg2); }
   .m-body { background: var(--bg); }
   
-  /* Zaštita izvoza (PDF/Slika) da OBAVEZNO ostane svijetao i profesionalan */
+  /* Izvoz (PDF/Slika) uvijek ostaje u svijetlim bojama radi profesionalnosti štampanja */
   #pp {
     --bg: #f0f2f8; --bg2: #e6eaf5; --card: #fff;
     --border: #d4daea; --border2: #c2cce0;
@@ -214,6 +214,8 @@ font-family:'Inter',sans-serif;font-size:16px;color:var(--txt);background:#fff;o
 font-size:16px;padding:0;border-radius:9px;width:40px;height:44px;
 display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .trow-bot{display:flex;gap:8px;align-items:center;}
+
+/* Auto troškovi (Procenti) */
 .tpct-wrap{position:relative;flex:0 0 120px;}
 .tpct-wrap input{width:100%;padding:11px 28px 11px 12px;border:1.5px solid var(--border);
 border-radius:9px;font-family:'JetBrains Mono',monospace;font-size:16px;
@@ -224,6 +226,15 @@ color:var(--txt);background:#fff;outline:none;-moz-appearance:textfield;-webkit-
 .tval-display{flex:1;padding:11px 12px;border:1.5px solid var(--border2);border-radius:9px;
 font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--txt2);
 background:var(--bg2);text-align:right;}
+
+/* Ručni troškovi (Fiksni iznos) */
+.tval-wrap{position:relative;flex:1;}
+.tval-input{width:100%;padding:11px 40px 11px 12px;border:1.5px solid var(--border);
+border-radius:9px;font-family:'JetBrains Mono',monospace;font-size:16px;
+color:var(--txt);background:#fff;outline:none;-moz-appearance:textfield;-webkit-appearance:none;}
+.tval-input::-webkit-outer-spin-button,.tval-input::-webkit-inner-spin-button{-webkit-appearance:none;}
+.tval-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,91,227,.1);}
+
 .btn-add{display:flex;align-items:center;gap:7px;background:var(--bg2);
 border:1.5px dashed var(--blue);border-radius:var(--rsm);padding:12px 16px;
 font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:var(--blue);
@@ -409,7 +420,7 @@ border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;}
 </div>
 
 <div class="res-card">
-<div class="res-lbl">Miesečna rata</div>
+<div class="res-lbl">Mjesečna rata</div>
 <div class="res-main">
 <span class="res-amt" id="r-rata">166,07</span>
 <span class="res-cur" id="r-cur">KM</span>
@@ -442,7 +453,7 @@ border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;}
 <div class="card-hd"><span class="ico">📅</span><h2>Rok otplate</h2></div>
 <div class="card-body">
 <div class="field">
-<label>Broj mieseci</label>
+<label>Broj mjeseci</label>
 <div class="iw">
 <input type="number" id="rok" inputmode="numeric" value="36" min="1" max="300" oninput="syncR('rok');calc()">
 <span class="isuf">mj.</span>
@@ -472,7 +483,7 @@ border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;}
 <div class="card-hd"><span class="ico">📋</span><h2>Troškovi odobrenja</h2></div>
 <div class="card-body">
 <p style="font-size:13px;color:var(--txt3);margin-bottom:14px;line-height:1.5;">
-Unesite procenat (%) od iznosa kredita — iznos se preračunava automatski.
+Automatski troškovi iz proizvoda se računaju u procentima (%), a nove troškove dodajete kao <b>fiksni iznos</b>.
 </p>
 <div id="tros-lista"></div>
 <button class="btn-add" onclick="dodajTros()">＋ Dodaj stavku troška</button>
@@ -497,66 +508,7 @@ Unesite procenat (%) od iznosa kredita — iznos se preračunava automatski.
 Viber
 </a>
 <a class="c-item" href="https://wa.me/38766298450" target="_blank">
-<div class="c-ico" style="background:#25d366;"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
-WhatsApp
-</a>
-<a class="c-item" href="mailto:vgojic@mikrofin.com">
-<div class="c-ico" style="background:var(--navy);"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
-E-mail
-</a>
-</div>
-</div>
-</div>
-
-<div class="overlay" id="modal">
-<div class="modal">
-<div class="m-hd">
-<h3>📄 Ponuda</h3>
-<button class="m-close" onclick="closeModal()">✕</button>
-</div>
-<div class="m-body">
-<div class="p-inputs">
-<div class="pf"><label>Broj ponude</label><input type="text" id="p-broj" placeholder="2025/001" oninput="refreshPP()"></div>
-<div class="pf"><label>Datum</label><input type="text" id="p-datum" placeholder="dd.mm.yyyy." oninput="refreshPP()"></div>
-</div>
-<div class="pf-full"><label>Klijent (opciono)</label><input type="text" id="p-klijent" placeholder="Ime i prezime" oninput="refreshPP()"></div>
-<div class="hdiv"></div>
-
-<div id="pp">
-<div class="pp-top">
-<div class="pp-logo">
-<div class="logo"><span class="logo-mf">MF</span><div class="logo-txt"><b>MIKROFIN</b><small>Vaš pouzdan partner</small></div></div>
-<div class="pp-logo-sub">MKD Mikrofin</div>
-</div>
-<div class="pp-meta">
-<div class="pm-tag">Kreditna ponuda</div>
-<div class="pm-title" id="pp-naslov">PONUDA</div>
-<div class="pm-sub" id="pp-datum-broj"></div>
-<div class="pm-klijent" id="pp-klijent"></div>
-</div>
-</div>
-<div class="pp-rata">
-<div><div class="pp-rl">Miesečna rata</div><div class="pp-rc" id="pp-conv"></div></div>
-<div><span class="pp-rv" id="pp-rata">0,00</span><span class="pp-rcur" id="pp-cur"> KM</span></div>
-</div>
-<div class="pp-body">
-<div class="pp-stitle">Detalji kreditnog aranžmana</div>
-<div class="pp-row"><span class="pp-rl2">Kreditni proizvod</span><span class="pp-rv2" id="pp-prod">—</span></div>
-<div class="pp-row"><span class="pp-rl2">Iznos kredita</span><span class="pp-rv2" id="pp-iznos">—</span></div>
-<div class="pp-row"><span class="pp-rl2">Rok otplate</span><span class="pp-rv2" id="pp-rok">—</span></div>
-<div id="pp-tros-blok" style="display:none;">
-<div class="pp-stitle" style="margin-top:12px;">Troškovi odobrenja</div>
-<div id="pp-tros-rows"></div>
-<div class="pp-row" style="font-weight:700;">
-<span class="pp-rl2" style="color:var(--navy);font-weight:700;">Ukupni troškovi</span>
-<span class="pp-rv2" id="pp-tros-uk"></span>
-</div>
-</div>
-</div>
-<div class="pp-foot">
-<div class="pp-fi"><svg width="11" height="11" viewBox="0 0 24 24" fill="var(--blue)"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>066 298 450</div>
-<div class="pp-fi"><svg width="11" height="11" viewBox="0 0 24 24" fill="#7360f2"><path d="M11.4 0C7.8 0 3.5 1.2 1.5 5.2.3 7.5 0 10 0 12.3c0 2.3.2 5.4 2 7.5 1 1.2 2.4 1.9 3.8 2.3v2.7c0 .3.4.5.7.3l3-2.5c.8.1 1.5.1 2.2.1 4.3 0 9.6-1.6 10.8-7.3.3-1.4.4-2.8.4-4.1C22.9 2.3 16.4 0 11.4 0zm5.7 16.1c-.5 1.3-2 2.4-3.5 2.7-.7.1-1.3.1-2 0-1.4-.3-2.7-1-3.9-1.8-1.4-1-2.6-2.3-3.5-3.7-.5-.8-1-1.7-1.2-2.7-.2-.8-.2-1.7 0-2.5.4-1.4 1.6-2.4 3-2.7.6-.1 1 .2 1.3.7l1.2 2.3c.2.5.1 1-.2 1.4l-.7.7c-.2.2-.2.5 0 .7.7 1.2 1.7 2.1 3 2.8.3.2.6.1.8-.1l.7-.8c.3-.4.8-.5 1.3-.3l2.3 1.1c.5.2.8.8.7 1.3l-.3.9z"/></svg>Viber</div>
-<div class="pp-fi"><svg width="11" height="11" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WhatsApp</div>
+<div class="c-ico" style="background:#25d366;"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WhatsApp</div>
 <div class="pp-fi"><svg width="11" height="11" viewBox="0 0 24 24" fill="var(--navy)"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>vgojic@mikrofin.com</div>
 </div>
 <div class="pp-note">Ponuda je informativnog karaktera i ne predstavlja ugovornu obavezu.</div>
@@ -749,19 +701,33 @@ if(p.nap){note.textContent=p.nap;note.style.display='block';}else{note.style.dis
 calc();
 }
 
-// ── TROŠKOVI ───────────────────────────────────
+// ── TROŠKOVI (IZMIJENJENO ZA FIKSNI UNOS) ──────
 function getTros(){
 let list=[],total=0;
 document.querySelectorAll('.trow').forEach(row=>{
 const naziv=row.querySelector('.tnaziv').value||'Trošak';
-const pct=parseFloat(row.querySelector('.tpct').value)||0;
-const iznos=parseFloat(document.getElementById('iznos').value)||0;
-const iznKM=cur==='EUR'?iznos*KURS:iznos;
-const valKM=iznKM*(pct/100);
-const valC=cur==='EUR'?r2(valKM/KURS):valKM;
-const disp=row.querySelector('.tval-display');
-if(disp)disp.textContent=fmt(valC)+' '+cur;
-list.push({naziv,pct,val:valC}); total+=valC;
+const pctInput=row.querySelector('.tpct');
+const valInput=row.querySelector('.tval-input');
+
+let valC=0, pct=0;
+// Ako je auto-trosak (u procentima)
+if(pctInput){
+  pct=parseFloat(pctInput.value)||0;
+  const iznos=parseFloat(document.getElementById('iznos').value)||0;
+  const iznKM=cur==='EUR'?iznos*KURS:iznos;
+  const valKM=iznKM*(pct/100);
+  valC=cur==='EUR'?r2(valKM/KURS):valKM;
+  const disp=row.querySelector('.tval-display');
+  if(disp)disp.textContent=fmt(valC)+' '+cur;
+} 
+// Ako je rucno dodan trosak (fiksni iznos)
+else if(valInput){
+  valC=parseFloat(valInput.value)||0;
+}
+
+if(valC>0 || pct>0 || valInput) {
+  list.push({naziv,pct,val:valC}); total+=valC;
+}
 });
 return{list,total};
 }
@@ -774,8 +740,10 @@ div.innerHTML=`<div class="trow-top">
 <button class="btn-rm" onclick="this.closest('.trow').remove();calc()">✕</button>
 </div>
 <div class="trow-bot">
-<div class="tpct-wrap"><input class="tpct" type="number" inputmode="decimal" value="0" min="0" max="100" step="0.01" oninput="calc()"><span class="tsuf-lbl">${cur}</span></div>
-<div class="tval-display">0,00 ${cur}</div>
+<div class="tval-wrap">
+<input class="tval-input" type="number" inputmode="decimal" placeholder="0.00" oninput="calc()">
+<span class="tsuf-lbl">${cur}</span>
+</div>
 </div>`;
 document.getElementById('tros-lista').appendChild(div); calc();
 }
@@ -847,7 +815,7 @@ const blok=document.getElementById('pp-tros-blok');
 if(list.length===0){blok.style.display='none';}
 else{
 blok.style.display='block';
-document.getElementById('pp-tros-rows').innerHTML=list.map(t=>`<div class="pp-row"><span class="pp-rl2">${t.naziv} (${fmtP(t.pct)})</span><span class="pp-rv2">${fmt(t.val)} ${cur}</span></div>`).join('');
+document.getElementById('pp-tros-rows').innerHTML=list.map(t=>`<div class="pp-row"><span class="pp-rl2">${t.naziv}${t.pct>0?` (${fmtP(t.pct)})`:''}</span><span class="pp-rv2">${fmt(t.val)} ${cur}</span></div>`).join('');
 document.getElementById('pp-tros-uk').textContent=fmt(tros)+' '+cur;
 }
 }
@@ -874,11 +842,14 @@ pdf.addImage(img,'JPEG',(pw-w)/2,10,w,h);
 const naziv='Mikrofin-Ponuda'+(document.getElementById('p-broj').value?'-'+document.getElementById('p-broj').value:'')+'.pdf';
 
 if(isIOS){
-// iOS: otvori PDF blob u novom tabu — korisnik može sačuvati ili podijeliti
-const blob=pdf.output('blob');
-const url=URL.createObjectURL(blob);
-window.open(url,'_blank');
-setTimeout(()=>URL.revokeObjectURL(url),60000);
+// iOS rješenje za sigurno preuzimanje PDF-a
+const blob = pdf.output('blob');
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = naziv;
+a.click();
+setTimeout(()=>URL.revokeObjectURL(url), 60000);
 } else {
 pdf.save(naziv);
 }
@@ -895,7 +866,6 @@ const dataUrl=canvas.toDataURL('image/jpeg',.95);
 lastImgDataUrl=dataUrl;
 
 if(isIOS){
-// iOS: prikaži sliku u overlay-u da korisnik može sačuvati long-press
 document.getElementById('share-img').src=dataUrl;
 document.getElementById('share-overlay').classList.add('open');
 } else {
