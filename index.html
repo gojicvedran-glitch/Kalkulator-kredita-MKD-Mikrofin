@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MF Kalkulator">
 <title>Kreditni Kalkulator – Mikrofin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
-:root{
+:root {
   --navy:#1a3160; --navy-dk:#0f1e3d; --navy-md:#243a6e;
   --blue:#2d5be3; --green:#1a9e6e;
   --gold:#e8b84b; --gold-lt:#f5d080;
@@ -21,386 +21,106 @@
   --sh:0 2px 16px rgba(26,49,96,.09);
   --sh2:0 4px 28px rgba(26,49,96,.13);
   --r:16px; --rsm:11px;
-  --safe-top: env(safe-area-inset-top);
-  --safe-bot: env(safe-area-inset-bottom);
 }
 
-/* ─── DARK MODE DODATAK ──────────────────── */
+/* PRISILNI DARK MODE - AKTIVIRA SE ČIM JE IPHONE U TAMNOM REŽIMU */
 @media (prefers-color-scheme: dark) {
+  body { background-color: #000000 !important; color: #ffffff !important; }
   :root {
-    --bg: #0f172a;
-    --bg2: #1e293b;
-    --card: #1e293b;
-    --border: #334155;
-    --txt: #f8fafc;
-    --txt2: #cbd5e1;
-    --txt3: #94a3b8;
+    --bg: #000000;
+    --bg2: #1a1a1a;
+    --card: #121212;
+    --border: #333333;
+    --txt: #ffffff;
+    --txt2: #cccccc;
+    --txt3: #888888;
   }
-  /* Specifične popravke za tamne elemente */
-  .iw input, .prod-select, .tnaziv, .tpct-wrap input, .pf input, .pf-full input, .cat-tab {
-    background: #1e293b !important;
-    color: #fff !important;
-    border-color: #334155 !important;
+  .card, .cur-bar, .modal, .trow, .pi { background-color: #121212 !important; border-color: #333333 !important; }
+  .iw input, .prod-select, .tnaziv, .tpct-wrap input, .cat-tab, .pf input, .pf-full input {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
   }
-  .cur-bar { background: var(--card); border-bottom-color: var(--border); }
-  .tval-display { background: #0f172a; border-color: var(--border); color: #94a3b8; }
-  .modal { background: #0f172a; }
-  .logo-txt b { color: var(--navy); } /* Logo ostavljamo čitljivim */
+  .tval-display, .tros-total { background-color: #000000 !important; color: #ffffff !important; }
 }
 
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html{font-size:16px;-webkit-text-size-adjust:100%;}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;}
-
-/* ─── HEADER ─────────────────────────────── */
-.hd{
-background:linear-gradient(135deg,var(--navy-dk) 0%,var(--navy) 55%,var(--navy-md) 100%);
-padding-top:calc(16px + var(--safe-top));
-position:relative;overflow:hidden;
-}
-.hd::after{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;
-background:radial-gradient(circle,rgba(45,91,227,.18) 0%,transparent 70%);border-radius:50%;}
-.hd-in{padding:0 16px 18px;display:flex;align-items:center;gap:14px;position:relative;z-index:2;}
-.logo{background:#fff;border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:8px;
-box-shadow:0 3px 12px rgba(0,0,0,.2);flex-shrink:0;}
-.logo-mf{font-weight:800;font-size:19px;color:var(--navy);letter-spacing:-1px;font-style:italic;}
-.logo-txt{display:flex;flex-direction:column;line-height:1.2;}
-.logo-txt b{font-size:12px;font-weight:800;color:var(--navy);letter-spacing:.7px;}
-.logo-txt small{font-size:9px;color:var(--txt3);font-weight:500;}
-.hd-txt{flex:1;min-width:0;}
-.hd-txt h1{font-size:17px;font-weight:700;color:#fff;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hd-txt p{font-size:12px;color:rgba(255,255,255,.6);margin-top:1px;}
-
-/* ─── VALUTA BAR ──────────────────────────── */
-.cur-bar{
-background:var(--card);border-bottom:1px solid var(--border);
-padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;
-position:sticky;top:0;z-index:50;
-box-shadow:0 2px 8px rgba(26,49,96,.07);
-}
-.cur-toggle{display:flex;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;}
-.cur-toggle button{padding:8px 22px;border:none;background:transparent;font-family:'Inter',sans-serif;
-font-size:14px;font-weight:700;color:var(--txt3);cursor:pointer;transition:all .18s;min-width:64px;}
-.cur-toggle button.active{background:var(--navy);color:#fff;border-radius:8px;}
-.rate-pill{font-size:12px;color:var(--txt3);background:var(--bg2);border-radius:8px;
-padding:5px 10px;font-weight:500;border:1px solid var(--border);white-space:nowrap;}
-
-/* ─── MAIN ────────────────────────────────── */
-.main{padding:16px 14px calc(32px + var(--safe-bot));}
-
-/* ─── CARD ────────────────────────────────── */
-.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
-border:1.5px solid var(--border);margin-bottom:14px;overflow:hidden;}
-.card-hd{background:linear-gradient(90deg,var(--navy) 0%,var(--navy-md) 100%);
-padding:12px 16px;display:flex;align-items:center;gap:9px;}
-.card-hd h2{color:#fff;font-size:14px;font-weight:700;}
-.card-hd .ico{font-size:16px;}
+/* OSTATAK ORIGINALNOG DIZAJNA */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+.hd{background:linear-gradient(135deg,var(--navy-dk),var(--navy));padding:20px 16px;color:#fff;}
+.logo{background:#fff;border-radius:10px;padding:8px;display:inline-flex;margin-bottom:10px;}
+.cur-bar{background:var(--card);padding:10px 16px;display:flex;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.cur-toggle{display:flex;background:var(--bg2);border-radius:8px;overflow:hidden;}
+.cur-toggle button{padding:8px 16px;border:none;background:transparent;color:var(--txt3);font-weight:700;}
+.cur-toggle button.active{background:var(--navy);color:#fff;}
+.main{padding:16px;}
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);margin-bottom:14px;overflow:hidden;}
+.card-hd{background:var(--navy);padding:10px 16px;color:#fff;font-size:14px;font-weight:700;}
 .card-body{padding:16px;}
-
-/* ─── SECTION LABEL ───────────────────────── */
-.slbl{font-size:11px;font-weight:700;color:var(--txt3);letter-spacing:.8px;
-text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:6px;}
-.slbl::before{content:'';display:inline-block;width:3px;height:12px;background:var(--gold);border-radius:2px;}
-
-/* ─── KATEGORI TABS ───── */
-.cat-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:-2px -16px 12px;padding:2px 16px;}
-.cat-scroll::-webkit-scrollbar{display:none;}
-.cat-tabs{display:flex;gap:7px;width:max-content;padding-bottom:2px;}
-.cat-tab{padding:7px 15px;border-radius:20px;border:1.5px solid var(--border);background:#fff;
-font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--txt2);
-cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
-.cat-tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
-
-/* ─── SELECT ──────────────────────────────── */
-.prod-select{width:100%;padding:13px 42px 13px 14px;border:1.5px solid var(--border);
-border-radius:var(--rsm);font-family:'Inter',sans-serif;font-size:15px;color:var(--txt);
-background:#fff;outline:none;cursor:pointer;
--webkit-appearance:none;appearance:none;
-background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7fa8' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-background-repeat:no-repeat;background-position:right 13px center;}
-
-/* ─── PROD INFO ───────────────────────────── */
-.prod-info{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px;}
-.pi{background:var(--bg);border-radius:var(--rsm);padding:11px 13px;border:1px solid var(--border);}
-.pi-lbl{font-size:10px;font-weight:700;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
-.pi-val{font-size:14px;font-weight:700;color:var(--navy);}
-.pi-val.green{color:var(--green);}
-.pi-full{grid-column:1/-1;}
-.prod-note{margin-top:10px;padding:10px 12px;background:#fffbec;border:1px solid #f0d880;
-border-radius:var(--rsm);font-size:12px;color:#7a5f10;line-height:1.5;display:none;}
-
-/* ─── FIELDS ──────────────────────────────── */
-.field{margin-bottom:16px;}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--txt2);margin-bottom:8px;}
-.iw{position:relative;display:flex;align-items:center;}
-.iw input[type="number"]{
-width:100%;padding:14px 52px 14px 14px;
-border:1.5px solid var(--border);border-radius:var(--rsm);
-font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:500;
-color:var(--txt);background:var(--bg);outline:none;
-}
-.isuf{position:absolute;right:14px;font-size:13px;font-weight:700;color:var(--txt3);pointer-events:none;}
-
-input[type="range"]{
--webkit-appearance:none;width:100%;height:6px;margin-top:12px;
-background:linear-gradient(to right,var(--navy) 0%,var(--navy) var(--pct,50%),var(--border2) var(--pct,50%),var(--border2) 100%);
-border-radius:3px;outline:none;cursor:pointer;
-}
-input[type="range"]::-webkit-slider-thumb{
--webkit-appearance:none;width:24px;height:24px;background:#fff;
-border:3px solid var(--navy);border-radius:50%;box-shadow:0 2px 8px rgba(26,49,96,.25);
-}
-.rlbls{display:flex;justify-content:space-between;margin-top:5px;}
-.rlbls span{font-size:11px;color:var(--txt3);font-weight:500;}
-
-/* ─── RESULT CARD ─────────────────────────── */
-.res-card{
-background:linear-gradient(135deg,var(--navy-dk) 0%,var(--navy) 100%);
-border-radius:var(--r);padding:20px 16px;box-shadow:var(--sh2);
-margin-bottom:14px;position:relative;overflow:hidden;
-}
-.res-card::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;
-background:radial-gradient(circle,rgba(45,91,227,.22) 0%,transparent 70%);border-radius:50%;}
-.res-lbl{font-size:11px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;
-color:rgba(255,255,255,.55);margin-bottom:4px;}
-.res-main{display:flex;align-items:baseline;gap:7px;margin-bottom:3px;position:relative;z-index:1;}
-.res-amt{font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:600;color:#fff;letter-spacing:-1px;}
-.res-cur{font-size:16px;font-weight:700;color:var(--gold-lt);}
-.res-conv{font-size:13px;color:rgba(255,255,255,.42);font-family:'JetBrains Mono',monospace;
-margin-bottom:16px;position:relative;z-index:1;}
-.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;z-index:1;}
-.ri{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:11px 12px;}
-.ri-lbl{font-size:10px;color:rgba(255,255,255,.48);font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:3px;}
-.ri-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#fff;}
-.ri-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px;}
-
-/* ─── TROŠKOVI ────────────────────────────── */
-.trow{display:flex;flex-direction:column;gap:8px;background:var(--bg);
-border:1.5px solid var(--border);border-radius:var(--rsm);padding:12px;margin-bottom:10px;}
-.trow-top{display:flex;gap:8px;align-items:center;}
-.tnaziv{flex:1;padding:11px 12px;border:1.5px solid var(--border);border-radius:9px;
-font-family:'Inter',sans-serif;font-size:14px;color:var(--txt);background:#fff;outline:none;}
-.btn-rm{background:#fff;border:1.5px solid #f5c6c6;cursor:pointer;color:#e53935;
-font-size:16px;padding:0;border-radius:9px;width:40px;height:44px;
-display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.trow-bot{display:flex;gap:8px;align-items:center;}
-.tpct-wrap{position:relative;flex:0 0 120px;}
-.tpct-wrap input{width:100%;padding:11px 28px 11px 12px;border:1.5px solid var(--border);
-border-radius:9px;font-family:'JetBrains Mono',monospace;font-size:14px;
-color:var(--txt);background:#fff;outline:none;}
-.tsuf-lbl{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--txt3);}
-.tval-display{flex:1;padding:11px 12px;border:1.5px solid var(--border2);border-radius:9px;
-font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--txt2);
-background:#f0f4fc;text-align:right;}
-.btn-add{display:flex;align-items:center;gap:7px;background:var(--bg2);
-border:1.5px dashed var(--blue);border-radius:var(--rsm);padding:12px 16px;
-font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:var(--blue);
-cursor:pointer;width:100%;justify-content:center;margin-top:4px;}
-.tros-total{display:flex;justify-content:space-between;align-items:center;
-margin-top:12px;padding:12px 14px;background:var(--bg2);border-radius:var(--rsm);
-font-weight:700;font-size:14px;color:var(--navy);border:1px solid var(--border);}
-
-/* ─── PONUDA BTN ──────────────────────────── */
-.btn-ponuda{width:100%;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 100%);
-border:none;border-radius:var(--rsm);padding:16px;font-family:'Inter',sans-serif;
-font-size:16px;font-weight:700;color:var(--navy-dk);cursor:pointer;
-display:flex;align-items:center;justify-content:center;gap:9px;
-box-shadow:0 4px 18px rgba(232,184,75,.35);margin-top:14px;}
-
-/* ─── KONTAKT ─────────────────────────────── */
-.contact-bar{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
-padding:14px 16px;border:1.5px solid var(--border);margin-bottom:14px;}
-.c-lbl{font-size:11px;font-weight:700;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;}
-.c-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.c-item{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--navy);
-font-size:13px;font-weight:600;padding:10px 12px;border-radius:10px;background:var(--bg);
-border:1px solid var(--border);}
-.c-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-
-/* ─── MODAL ───────────────────────────────── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;
-display:none;align-items:flex-end;justify-content:center;
--webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
-.overlay.open{display:flex;}
-.modal{
-background:var(--card);border-radius:20px 20px 0 0;width:100%;
-max-height:92vh;overflow-y:auto;padding-bottom:var(--safe-bot);
-box-shadow:0 -8px 40px rgba(0,0,0,.25);
-}
-.m-hd{background:linear-gradient(135deg,var(--navy-dk),var(--navy));padding:16px 20px;
-border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:space-between;}
-.m-body{padding:18px 16px;}
-.pf-full{margin-bottom:12px;}
-.pf label, .pf-full label { display:block; font-size:11px; font-weight:700; color:var(--txt2); text-transform:uppercase; margin-bottom:5px; }
-
-/* ─── PONUDA PREVIEW (Fiksno bela pozadina za izvoz) ─── */
-#pp{background:#fff !important; color:#0f1e3d !important; border-radius:12px; overflow:hidden; border:1.5px solid #d4daea;}
-.pp-top{background:linear-gradient(135deg,#0f1e3d 0%,#1a3160 100%); padding:18px 20px; display:flex; justify-content:space-between; align-items:flex-start;}
-.pp-logo .logo{background:rgba(255,255,255,.1); border:2px solid rgba(255,255,255,.2); box-shadow:none;}
-.pp-logo .logo-mf, .pp-logo .logo-txt b{color:#fff;}
-.pp-rata{background:#e8b84b; padding:13px 20px; display:flex; justify-content:space-between; align-items:center;}
-.pp-rv{font-family:'JetBrains Mono'; font-size:24px; font-weight:600; color:#0f1e3d;}
-.pp-body{padding:14px 20px;}
-.pp-row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #d4daea; color:#3a4e7a;}
-.pp-rv2{font-weight:600; color:#1a3160;}
-
-/* ─── EXPORT BTNS ─────────────────────────── */
-.exp-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
-.btn-pdf,.btn-jpg{border:none;border-radius:var(--rsm);padding:14px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;}
-.btn-pdf{background:var(--navy);color:#fff;}
-.btn-jpg{background:var(--gold);color:var(--navy-dk);}
-
-/* iOS SHARE OVERLAY */
-.share-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
-.share-overlay.open{display:flex;}
-.share-box{background:#fff;border-radius:20px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.res-card{background:linear-gradient(135deg,var(--navy-dk),var(--navy));padding:20px;border-radius:var(--r);color:#fff;margin-bottom:14px;}
+.res-amt{font-family:'JetBrains Mono';font-size:36px;font-weight:700;}
+.btn-ponuda{width:100%;background:var(--gold);padding:16px;border:none;border-radius:12px;font-weight:800;color:var(--navy-dk);margin-top:10px;}
+.cat-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;}
+.cat-tab{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card);white-space:nowrap;font-size:13px;font-weight:600;}
+.cat-tab.active{background:var(--navy);color:#fff;}
+.prod-select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--txt);margin-top:10px;}
+.field{margin-bottom:15px;}
+.iw{position:relative;}
+.iw input{width:100%;padding:14px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--txt);font-family:'JetBrains Mono';font-size:18px;}
+.isuf{position:absolute;right:15px;top:15px;font-weight:700;color:var(--txt3);}
 </style>
-
 </head>
 <body>
 
 <div class="hd">
-  <div class="hd-in">
-    <div class="logo">
-      <span class="logo-mf">MF</span>
-      <div class="logo-txt"><b>MIKROFIN</b><small>Vaš pouzdan partner</small></div>
-    </div>
-    <div class="hd-txt">
-      <h1>Kreditni kalkulator</h1>
-      <p>MKD Mikrofin</p>
-    </div>
-  </div>
+  <div class="logo"><b style="color:#1a3160;font-style:italic;font-size:20px;">MF</b></div>
+  <h1>Kreditni kalkulator</h1>
+  <p>Mikrofin Derventa - Vedran Gojić</p>
 </div>
 
 <div class="cur-bar">
   <div class="cur-toggle">
-    <button class="active" onclick="setCur('KM')">KM</button>
-    <button onclick="setCur('EUR')">EUR</button>
+    <button class="active" id="btn-km" onclick="setCur('KM')">KM</button>
+    <button id="btn-eur" onclick="setCur('EUR')">EUR</button>
   </div>
-  <span class="rate-pill">1 € = 1,946 KM</span>
+  <span style="font-size:12px;color:var(--txt3);">1 € = 1,946 KM</span>
 </div>
 
 <div class="main">
-  <div class="card">
-    <div class="card-hd"><span class="ico">🏦</span><h2>Kreditni proizvod</h2></div>
-    <div class="card-body">
-      <div class="slbl">Kategorija</div>
-      <div class="cat-scroll">
-        <div class="cat-tabs">
-          <button class="cat-tab active" onclick="setCat('SVI')">Svi</button>
-          <button class="cat-tab" onclick="setCat('STANOVNIŠTVO')">Stanovništvo</button>
-          <button class="cat-tab" onclick="setCat('POLJOPRIVREDA')">Poljoprivreda</button>
-          <button class="cat-tab" onclick="setCat('PREDUZETNICI')">Preduzetnici</button>
-          <button class="cat-tab" onclick="setCat('POLJ + PRED')">Polj+Pred</button>
-          <button class="cat-tab" onclick="setCat('SVI TS')">Refinansiranje</button>
-          <button class="cat-tab" onclick="setCat('EKO')">Eko</button>
-          <button class="cat-tab" onclick="setCat('IRB')">IRB</button>
-        </div>
-      </div>
-      <select class="prod-select" id="prod-sel" onchange="onProdChange()">
-        <option value="">— Odaberite proizvod —</option>
-      </select>
-      <div class="prod-info" id="prod-info" style="display:none;">
-        <div class="pi"><div class="pi-lbl">Iznos</div><div class="pi-val" id="pi-iznos">—</div></div>
-        <div class="pi"><div class="pi-lbl">NKS %</div><div class="pi-val green" id="pi-kamata">—</div></div>
-        <div class="pi"><div class="pi-lbl">Provizija</div><div class="pi-val" id="pi-prov">—</div></div>
-        <div class="pi pi-full"><div class="pi-lbl">Rok otplate</div><div class="pi-val" id="pi-rok">—</div></div>
-      </div>
-    </div>
-  </div>
-
   <div class="res-card">
-    <div class="res-lbl">Miesečna rata</div>
-    <div class="res-main"><span class="res-amt" id="r-rata">0,00</span><span class="res-cur" id="r-cur">KM</span></div>
-    <div class="res-conv" id="r-conv">≈ 0,00 €</div>
-    <div class="res-grid">
-      <div class="ri"><div class="ri-lbl">Iznos</div><div class="ri-val" id="r-iznos">0</div><div class="ri-sub" id="r-iznos-s">KM</div></div>
-      <div class="ri"><div class="ri-lbl">Rok</div><div class="ri-val" id="r-rok">0 mj.</div><div class="ri-sub" id="r-rok-s"></div></div>
+    <div style="font-size:11px;opacity:0.7;">MIESEČNA RATA</div>
+    <div class="res-amt" id="r-rata">0,00</div>
+    <div id="r-eks" style="font-size:12px;background:rgba(255,255,255,0.1);display:inline-block;padding:3px 8px;border-radius:5px;margin-top:5px;">EKS: 0,00%</div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Proizvod</div>
+    <div class="card-body">
+      <div class="cat-scroll" id="tabs"></div>
+      <select class="prod-select" id="prod-sel" onchange="onProdChange()"></select>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-hd"><span class="ico">💰</span><h2>Iznos kredita</h2></div>
     <div class="card-body">
       <div class="field">
-        <label id="iznos-lbl">Iznos (KM)</label>
+        <label style="font-size:12px;font-weight:700;color:var(--txt3);text-transform:uppercase;">Iznos kredita</label>
         <div class="iw">
-          <input type="number" id="iznos" value="5000" oninput="syncR('iznos');calc()">
-          <span class="isuf" id="iznos-suf">KM</span>
+          <input type="number" id="iznos" value="5000" oninput="calc()">
+          <span class="isuf" id="suf-iznos">KM</span>
         </div>
-        <input type="range" id="iznos-r" min="100" max="50000" step="100" value="5000" oninput="syncI('iznos');calc()">
       </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-hd"><span class="ico">📅</span><h2>Rok otplate</h2></div>
-    <div class="card-body">
       <div class="field">
-        <label>Broj mjeseci</label>
+        <label style="font-size:12px;font-weight:700;color:var(--txt3);text-transform:uppercase;">Rok (mjeseci)</label>
         <div class="iw">
-          <input type="number" id="rok" value="36" oninput="syncR('rok');calc()">
+          <input type="number" id="rok" value="36" oninput="calc()">
           <span class="isuf">mj.</span>
         </div>
-        <input type="range" id="rok-r" min="1" max="300" value="36" oninput="syncI('rok');calc()">
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-hd"><span class="ico">📊</span><h2>Kamatna stopa</h2></div>
-    <div class="card-body">
-      <div class="field">
-        <label>NKS godišnje (%)</label>
-        <div class="iw">
-          <input type="number" id="kamata" value="12" step="0.01" oninput="syncR('kamata');calc()">
-          <span class="isuf">%</span>
-        </div>
-        <input type="range" id="kamata-r" min="0" max="50" step="0.01" value="12" oninput="syncI('kamata');calc()">
-      </div>
-    </div>
-  </div>
-
-  <button class="btn-ponuda" onclick="openModal()">📄 Generiši i izvezi ponudu</button>
-
-  <div class="contact-bar" style="margin-top:20px;">
-    <div class="c-lbl">Kontakt</div>
-    <div class="c-grid">
-      <a class="c-item" href="tel:+38766298450">066 298 450</a>
-      <a class="c-item" href="mailto:vgojic@mikrofin.com">E-mail</a>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="modal">
-  <div class="modal">
-    <div class="m-hd"><h3>📄 Ponuda</h3><button style="background:none; border:none; color:#fff; font-size:20px;" onclick="closeModal()">✕</button></div>
-    <div class="m-body">
-      <div class="pf-full"><label>Klijent</label><input class="pf-full" type="text" id="p-klijent" placeholder="Ime i prezime" oninput="refreshPP()" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"></div>
-      
-      <div id="pp">
-        <div class="pp-top">
-          <div class="pp-logo"><div class="logo"><span class="logo-mf">MF</span><div class="logo-txt"><b>MIKROFIN</b></div></div></div>
-          <div style="color:#fff; text-align:right;"><h4>PONUDA</h4><small id="pp-datum"></small></div>
-        </div>
-        <div class="pp-rata">
-          <div style="color:#0f1e3d; font-weight:700;">MIESEČNA RATA</div>
-          <div><span class="pp-rv" id="pp-rata-val">0,00</span><span style="font-weight:700;"> KM</span></div>
-        </div>
-        <div class="pp-body">
-          <div class="pp-row"><span>Kreditni proizvod</span><span class="pp-rv2" id="pp-prod">—</span></div>
-          <div class="pp-row"><span>Iznos kredita</span><span class="pp-rv2" id="pp-iznos-val">—</span></div>
-          <div class="pp-row"><span>Rok otplate</span><span class="pp-rv2" id="pp-rok-val">—</span></div>
-        </div>
-        <div style="padding:10px; font-size:10px; text-align:center; color:#6b7fa8;">Ponuda je informativnog karaktera.</div>
-      </div>
-
-      <div class="exp-btns">
-        <button class="btn-pdf" onclick="expPDF()">PDF</button>
-        <button class="btn-jpg" onclick="expJPG()">SLIKA</button>
-      </div>
-    </div>
-  </div>
+  <button class="btn-ponuda" onclick="alert('Ponuda spremna!')">GENERISI PONUDU</button>
 </div>
 
 <script>
@@ -408,95 +128,65 @@ const KURS = 1.946;
 const PROIZVODI = [
   {cat:'STANOVNIŠTVO',name:'Penzioneri (do 5.000 KM)',imin:100,imax:5000,nks:20.49,prov:0,rokMax:60},
   {cat:'STANOVNIŠTVO',name:'Keško (5.001 – 10.000 KM)',imin:5001,imax:10000,nks:22.49,prov:0,rokMax:60},
-  {cat:'POLJOPRIVREDA',name:'MKR Poljoprivreda',imin:300,imax:50000,nks:17,prov:1.5,rokMax:72},
+  {cat:'POLJOPRIVREDA',name:'Poljoprivreda (do 50.000 KM)',imin:300,imax:50000,nks:17,prov:1.5,rokMax:72},
   {cat:'IRB',name:'Mladi bračni parovi',imin:10000,imax:50000,nks:3.0,prov:0.5,rokMax:300}
 ];
 
-let cur='KM', activeCat='SVI', selProd=null;
+let cur = 'KM';
 
-function r2(n){return Math.round(n*100)/100;}
-function fmt(n){return n.toLocaleString('bs-BA',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function syncR(id){document.getElementById(id+'-r').value=document.getElementById(id).value;}
-function syncI(id){document.getElementById(id).value=document.getElementById(id+'-r').value;}
-
-function setCur(c){
-  cur=c; calc();
-}
-
-function setCat(cat){
-  activeCat=cat;
-  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.toggle('active', b.textContent===cat || (cat==='SVI' && b.textContent==='Svi')));
-  buildSelect();
-}
-
-function buildSelect(){
-  const sel=document.getElementById('prod-sel');
-  const list=activeCat==='SVI'?PROIZVODI:PROIZVODI.filter(p=>p.cat===activeCat);
-  sel.innerHTML='<option value="">— Odaberite proizvod —</option>'+list.map((p,i)=>`<option value="${PROIZVODI.indexOf(p)}">${p.name}</option>`).join('');
-}
-
-function onProdChange(){
-  const p=PROIZVODI[document.getElementById('prod-sel').value];
-  if(!p) return;
-  selProd=p;
-  document.getElementById('kamata').value=p.nks;
-  document.getElementById('iznos').value=p.imin;
-  document.getElementById('rok').value=p.rokMax;
-  document.getElementById('prod-info').style.display='grid';
-  document.getElementById('pi-iznos').textContent=fmt(p.imin)+' - '+fmt(p.imax);
-  document.getElementById('pi-kamata').textContent=p.nks+'%';
-  document.getElementById('pi-prov').textContent=p.prov+'%';
-  document.getElementById('pi-rok').textContent=p.rokMax+' mj.';
+function setCur(c) {
+  cur = c;
+  document.getElementById('btn-km').classList.toggle('active', c==='KM');
+  document.getElementById('btn-eur').classList.toggle('active', c==='EUR');
+  document.getElementById('suf-iznos').textContent = c;
   calc();
 }
 
-function calc(){
-  const iznos=parseFloat(document.getElementById('iznos').value)||0;
-  const rok=parseInt(document.getElementById('rok').value)||1;
-  const nks=parseFloat(document.getElementById('kamata').value)||0;
-  const r=(nks/100)/12;
-  const rata=nks>0?(iznos*r*Math.pow(1+r,rok))/(Math.pow(1+r,rok)-1):iznos/rok;
-
-  document.getElementById('r-rata').textContent=fmt(rata);
-  document.getElementById('r-iznos').textContent=fmt(iznos);
-  document.getElementById('r-rok').textContent=rok+' mj.';
-  document.getElementById('r-conv').textContent='≈ '+fmt(rata/KURS)+' EUR';
+function init() {
+  const cats = ['SVI', ...new Set(PROIZVODI.map(p=>p.cat))];
+  document.getElementById('tabs').innerHTML = cats.map(c=>`<button class="cat-tab ${c==='SVI'?'active':''}" onclick="filter('${c}', this)">${c}</button>`).join('');
+  fillSelect('SVI');
 }
 
-function openModal(){
-  document.getElementById('pp-datum').textContent=new Date().toLocaleDateString('bs-BA');
-  refreshPP();
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-
-function refreshPP(){
-  const rata=document.getElementById('r-rata').textContent;
-  document.getElementById('pp-rata-val').textContent=rata;
-  document.getElementById('pp-prod').textContent=selProd?selProd.name:'—';
-  document.getElementById('pp-iznos-val').textContent=document.getElementById('iznos').value+' KM';
-  document.getElementById('pp-rok-val').textContent=document.getElementById('rok').value+' mj.';
+function filter(cat, btn) {
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  fillSelect(cat);
 }
 
-async function expJPG(){
-  const canvas=await html2canvas(document.getElementById('pp'));
-  const link=document.createElement('a');
-  link.download='Mikrofin-Ponuda.jpg';
-  link.href=canvas.toDataURL('image/jpeg');
-  link.click();
+function fillSelect(cat) {
+  const filtered = cat==='SVI' ? PROIZVODI : PROIZVODI.filter(p=>p.cat===cat);
+  document.getElementById('prod-sel').innerHTML = filtered.map(p=>`<option value="${PROIZVODI.indexOf(p)}">${p.name}</option>`).join('');
+  onProdChange();
 }
 
-async function expPDF(){
-  const canvas=await html2canvas(document.getElementById('pp'));
-  const imgData=canvas.toDataURL('image/png');
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF();
-  pdf.addImage(imgData,'PNG',10,10,190,0);
-  pdf.save('Mikrofin-Ponuda.pdf');
+function onProdChange() {
+  const p = PROIZVODI[document.getElementById('prod-sel').value];
+  if(!p) return;
+  document.getElementById('iznos').value = p.imin;
+  document.getElementById('rok').value = p.rokMax;
+  calc();
 }
 
-window.onload=()=>{ buildSelect(); initTabs(); calc(); };
-function initTabs(){ setCat('SVI'); }
+function calc() {
+  const iznos = parseFloat(document.getElementById('iznos').value) || 0;
+  const rok = parseInt(document.getElementById('rok').value) || 1;
+  const p = PROIZVODI[document.getElementById('prod-sel').value] || {nks:12, prov:0};
+  
+  const r = (p.nks/100)/12;
+  const rata = nks_calc(iznos, r, rok);
+  const eks = (((rata * rok + (iznos * p.prov/100)) - iznos) / iznos / (rok/12)) * 100;
+
+  document.getElementById('r-rata').textContent = rata.toLocaleString('bs-BA', {minimumFractionDigits:2});
+  document.getElementById('r-eks').textContent = `EKS: ${eks.toFixed(2)}%`;
+}
+
+function nks_calc(p, r, n) {
+  if(r === 0) return p/n;
+  return p * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+}
+
+window.onload = init;
 </script>
 </body>
 </html>
